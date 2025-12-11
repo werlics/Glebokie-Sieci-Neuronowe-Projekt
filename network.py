@@ -10,6 +10,7 @@ class CNNNetwork(nn.Module):
         self.conv3 = self._create_conv_block(32, 64)
         self.conv4 = self._create_conv_block(64, 128)
         self.flatten = nn.Flatten()
+        self.dropout = nn.Dropout(p=0.5) 
 
         dummy_input = torch.randn(1, *input_shape)
         with torch.no_grad():
@@ -25,7 +26,7 @@ class CNNNetwork(nn.Module):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=2),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
+            nn.MaxPool2d(kernel_size=2),
         )
 
     def forward(self, input_data):
@@ -34,7 +35,7 @@ class CNNNetwork(nn.Module):
         x = self.conv3(x)
         x = self.conv4(x)
         x = self.flatten(x)
+        x = self.dropout(x)
+        
         logits = self.linear(x)
         return logits
-
-
